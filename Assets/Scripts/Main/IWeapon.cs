@@ -2,7 +2,7 @@
 using UnityEngine;
 
 public interface IWeapon {
-	void GetDisplayName();
+	string GetDisplayName();
 	//fire the weapon
 	void MainFire();
 
@@ -10,10 +10,15 @@ public interface IWeapon {
 	void SecondaryFire();
 
 	//get how many times this weapon can still be used
-	void GetAmmoAmount();
+	int GetAmmoCount();
 
-	//addAmmo
-	void AddAmmo(int amount);
+	//add ammo
+	void AddAmmo(int count);
 
-	void RemoveAmmo(int amount);
+	//remove ammo
+	void RemoveAmmo(int count);
+
+	//Get a game object that corresponds to this weapon
+	GameObject CreateGameObject ();
+
 }
