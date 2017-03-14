@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CompoundMaterialComponent : MonoBehaviour {
 
+	public bool isFrozen = false;
+
 	public CompoundMaterial compoundMaterial;
 
 	public CompoundMaterial prevMaterial;
@@ -12,6 +14,10 @@ public class CompoundMaterialComponent : MonoBehaviour {
 		if (compoundMaterial != null) {
 			SetMaterial (compoundMaterial);
 		}
+	}
+
+	public void ResetMaterial() {
+		ApplyMaterialProperties (compoundMaterial);
 	}
 
 	public void SetMaterial(CompoundMaterial newMaterial) {
@@ -24,8 +30,14 @@ public class CompoundMaterialComponent : MonoBehaviour {
 		if (!gameObject.CompareTag (Props.GroupTag)) {
 			Debug.LogError ("Cannot set material for something that is not a \"Group\"");
 		}
+
 		Rigidbody rig = gameObject.GetComponent<Rigidbody> ();
-		rig.SetDensity (mat.density);
+		if (isFrozen) {
+			rig.isKinematic = true;
+			rig.constraints = RigidbodyConstraints.FreezeAll;
+		} else {
+			rig.SetDensity (mat.density);
+		}
 		rig.useGravity = mat.useGravity;
 		foreach(Transform child in gameObject.transform) { 
 			if (child.gameObject.CompareTag (Props.ObjectTag)) {

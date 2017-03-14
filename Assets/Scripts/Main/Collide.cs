@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class collide : MonoBehaviour {
+public class Collide : MonoBehaviour {
 
 	private CompoundMaterial material;
 	private List <Collision> currentCollisions = new List <Collision> ();
@@ -70,9 +70,26 @@ public class collide : MonoBehaviour {
 	}
 
 	void Merge(GameObject col) {
-		foreach (Transform child in gameObject.transform) {
-			child.parent = col.transform;
+		GameObject currGroup;
+		GameObject nextGroup;
+
+		Rigidbody currRb = gameObject.GetComponent<Rigidbody>();
+		if (currRb.isKinematic ||
+			currRb.constraints == RigidbodyConstraints.FreezeAll ||
+		    currRb.constraints == RigidbodyConstraints.FreezePosition ||
+		    currRb.constraints == RigidbodyConstraints.FreezeRotation) {
+			//flip
+			currGroup = col;
+			nextGroup = gameObject;
+		} else {
+			currGroup = gameObject;
+			nextGroup = col;
 		}
-		//Set new Rigidbody Constraints and Gravity? 
+
+		foreach (Transform child in currGroup.transform) {
+			child.parent = nextGroup.transform;
+		}
+		//Set material again
+		nextGroup.GetComponent<CompoundMaterialComponent> ().ResetMaterial ();
 	}
 }
