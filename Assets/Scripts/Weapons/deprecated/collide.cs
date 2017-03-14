@@ -13,7 +13,7 @@ public class collide : MonoBehaviour {
 		material = FindMaterial(gameObject);
 
 		//Check that this is a Group Object
-		if (gameObject.CompareTag (Props.GroupTag)) {
+		if (!gameObject.CompareTag (Props.GroupTag)) {
 			Debug.LogError (name + " does not have a 'Group' tag, and therefore cannot be treated as a Group object");
 		}
 	}
