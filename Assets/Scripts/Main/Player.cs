@@ -22,11 +22,17 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetButton ("Fire1")) {
+		if (Input.GetButtonDown ("Fire1")) {
 			//fire the weapon
 			if (currWeapon != null && currWeapon.GetComponent(typeof(IWeapon)) != null) {
 				IWeapon weapon = (IWeapon) currWeapon.GetComponent(typeof(IWeapon));
 				weapon.MainFire ();
+			}
+		}
+		if (Input.GetButtonDown ("Fire2")) {
+			if (currWeapon != null && currWeapon.GetComponent(typeof(IWeapon)) != null) {
+				IWeapon weapon = (IWeapon) currWeapon.GetComponent(typeof(IWeapon));
+				weapon.SecondaryFire ();
 			}
 		}
 		//TODO switch weapons

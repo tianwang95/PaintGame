@@ -28,7 +28,7 @@ public class NunChuckTosser : MonoBehaviour, IWeapon {
 		if (ammoCount >= 1) {
 			GameObject clone = Instantiate (nunChuckProjectile, transform.position + transform.forward, Random.rotation);
 			Rigidbody[] rigid_body = clone.GetComponentsInChildren<Rigidbody> ();
-			rigid_body[0].AddForce (Camera.main.transform.forward * thrust);
+			rigid_body[0].AddForce (transform.forward * thrust);
 			Vector3 torque = new Vector3 (Random.Range (-1, 1), Random.Range (-1, 1), Random.Range (-1, 1));
 			torque = torque * 100.0F;
 			rigid_body [0].AddTorque (torque);
