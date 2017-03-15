@@ -6,7 +6,7 @@ public class PickPaintTool : MonoBehaviour, IWeapon {
 
 	public CompoundMaterial paintMaterial;
 
-	private int ammoCount;
+	private int ammoCount = 1;
 
 	public string GetDisplayName() {
 		return "Paint Bucket";
