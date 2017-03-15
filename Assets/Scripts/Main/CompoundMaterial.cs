@@ -8,5 +8,7 @@ public class CompoundMaterial : ScriptableObject {
 	public Material material;
 	public PhysicMaterial physicMaterial;
 	public float density = 1.0f;
+	public float drag = 0.0f;
+	public float angularDrag = 0.05f;
 	public bool useGravity = true;
 }

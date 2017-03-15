@@ -7,7 +7,7 @@ public class Player : MonoBehaviour {
 	public GameObject[] initWeapons;
 
 	[SerializeField]
-	private List<GameObject> weapons;
+	private List<GameObject> weapons = new List<GameObject>();
 	[SerializeField]
 	private float amountForward;
 	[SerializeField]

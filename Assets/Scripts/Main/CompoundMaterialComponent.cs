@@ -40,6 +40,8 @@ public class CompoundMaterialComponent : MonoBehaviour {
 			rig.constraints = RigidbodyConstraints.None;
 			rig.SetDensity (mat.density);
 		}
+		rig.drag = mat.drag;
+		rig.angularDrag = mat.angularDrag;
 		rig.useGravity = mat.useGravity;
 		foreach(Transform child in gameObject.transform) { 
 			if (child.gameObject.CompareTag (Props.ObjectTag)) {

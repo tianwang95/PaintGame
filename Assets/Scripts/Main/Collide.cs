@@ -5,7 +5,8 @@ using UnityEngine;
 public class Collide : MonoBehaviour {
 
 	private CompoundMaterial material;
-	private List <Collision> currentCollisions = new List <Collision> ();
+	private List <Collision> currentCollisions = new List<Collision> ();
+	private List <Collision> toRemove = new List<Collision> ();
 
 	// Use this for initialization
 	void Start () {
@@ -20,6 +21,8 @@ public class Collide : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+//		Vector3 vel = gameObject.GetComponent<Rigidbody> ().angularVelocity;
+//		gameObject.GetComponentInChildren<Renderer> ().material.color = new Vector4 (vel[0], vel[1], vel[2], 1.0f);
 		//reset color
 		material = FindMaterial(gameObject);
 
@@ -33,6 +36,9 @@ public class Collide : MonoBehaviour {
 			if (col.transform.gameObject.CompareTag(Props.GroupTag)) {
 				CheckMerge (col);
 			}
+		}
+		foreach (Collision col in toRemove) {
+			currentCollisions.Remove (col);
 		}
 	}
 
@@ -57,14 +63,16 @@ public class Collide : MonoBehaviour {
 
 		//Check that Collision object is not this / avoid duplicate collisions
 		if(gameObject == collision.gameObject ||
-			gameObject.GetInstanceID() >= collision.gameObject.GetInstanceID()) {
+			gameObject.GetComponent<Rigidbody>().mass >= collision.gameObject.GetComponent<Rigidbody>().mass) {
 				return;
 			}
 
 		//Get Collision object color
 		CompoundMaterial colMaterial = FindMaterial(collision.gameObject);
 		if(material == colMaterial) {
+//			MergeJoints (collision.gameObject);
 			Merge(collision.gameObject);
+			toRemove.Add (collision);
 		}
 	
 	}
@@ -85,11 +93,15 @@ public class Collide : MonoBehaviour {
 			currGroup = gameObject;
 			nextGroup = col;
 		}
-
 		foreach (Transform child in currGroup.transform) {
 			child.parent = nextGroup.transform;
 		}
 		//Set material again
 		nextGroup.GetComponent<CompoundMaterialComponent> ().ResetMaterial ();
+	}
+
+	void MergeJoints(GameObject col) {
+		FixedJoint joint = gameObject.AddComponent<FixedJoint>();
+		joint.connectedBody = col.GetComponent<Rigidbody> ();
 	}
 }

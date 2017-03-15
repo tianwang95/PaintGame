@@ -51,7 +51,8 @@ public class GravityGun : MonoBehaviour, IWeapon {
 				Rigidbody hitBody = hitObject.GetComponent<Rigidbody> ();
 				//check that we can move this thing
 				if (hitBody != null &&
-				   hitBody.constraints == RigidbodyConstraints.None) {
+					hitBody.constraints == RigidbodyConstraints.None &&
+					hitObject.CompareTag(Props.GroupTag)) {
 					prevUsingGravity = hitBody.useGravity;
 					prevDrag = hitBody.drag;
 					prevAngularDrag = hitBody.angularDrag;
@@ -84,7 +85,7 @@ public class GravityGun : MonoBehaviour, IWeapon {
 		rig.AddForceAtPosition (path.normalized * forceMagnitude, controlPointWorld);
 	}
 
-	void ResetControlledObject() {
+	public void ResetControlledObject() {
 		Rigidbody rig = controlledObject.GetComponent<Rigidbody> ();
 		rig.useGravity = prevUsingGravity;
 		rig.drag = prevDrag;
