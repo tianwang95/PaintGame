@@ -36,6 +36,8 @@ public class CompoundMaterialComponent : MonoBehaviour {
 			rig.isKinematic = true;
 			rig.constraints = RigidbodyConstraints.FreezeAll;
 		} else {
+			rig.isKinematic = false;
+			rig.constraints = RigidbodyConstraints.None;
 			rig.SetDensity (mat.density);
 		}
 		rig.useGravity = mat.useGravity;

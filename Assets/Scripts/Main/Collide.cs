@@ -57,7 +57,7 @@ public class Collide : MonoBehaviour {
 
 		//Check that Collision object is not this / avoid duplicate collisions
 		if(gameObject == collision.gameObject ||
-			name.CompareTo(collision.gameObject.name) >= 0) {
+			gameObject.GetInstanceID() >= collision.gameObject.GetInstanceID()) {
 				return;
 			}
 
