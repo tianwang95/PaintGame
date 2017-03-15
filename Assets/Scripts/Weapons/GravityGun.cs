@@ -25,17 +25,21 @@ public class GravityGun : MonoBehaviour, IWeapon {
 	public string GetDisplayName() {
 		return "Gravity Gun";
 	}
+
 	//fire the weapon
 	public void MainFire() {
+		if (controlledObject != null) {
+			ResetControlledObject ();
+			Rigidbody rig = controlledObject.GetComponent<Rigidbody> ();
+			rig.AddForce (Camera.main.transform.forward * thrust);
+			controlledObject = null;
+		}
 	}
 
 	//fire a secondary function of the weapon, can be a no-op!
 	public void SecondaryFire() {
 		if (controlledObject != null) {
-			Rigidbody rig = controlledObject.GetComponent<Rigidbody> ();
-			rig.useGravity = prevUsingGravity;
-			rig.drag = prevDrag;
-			rig.angularDrag = prevAngularDrag;
+			ResetControlledObject ();
 			controlledObject = null;
 		} else {
 			Ray ray = new Ray (Camera.main.transform.position, Camera.main.transform.forward);
@@ -78,7 +82,13 @@ public class GravityGun : MonoBehaviour, IWeapon {
 			forceMagnitude = Mathf.Min (grabStrength / (dist * dist), grabStrength);
 		}
 		rig.AddForceAtPosition (path.normalized * forceMagnitude, controlPointWorld);
+	}
 
+	void ResetControlledObject() {
+		Rigidbody rig = controlledObject.GetComponent<Rigidbody> ();
+		rig.useGravity = prevUsingGravity;
+		rig.drag = prevDrag;
+		rig.angularDrag = prevAngularDrag;
 	}
 
 	//get how many times this weapon can still be used
