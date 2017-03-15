@@ -80,6 +80,8 @@ public class GravityGun : MonoBehaviour, IWeapon {
 			rig.angularDrag = 3f;
 			forceMagnitude = dist * hookesConst;
 		} else {
+			rig.drag = prevDrag;
+			rig.angularDrag = prevAngularDrag;
 			forceMagnitude = Mathf.Min (grabStrength / (dist * dist), grabStrength);
 		}
 		rig.AddForceAtPosition (path.normalized * forceMagnitude, controlPointWorld);
