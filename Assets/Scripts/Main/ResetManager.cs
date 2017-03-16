@@ -8,7 +8,7 @@ public class ResetManager : MonoBehaviour {
 
 	void Awake() {
 		if (FindObjectsOfType (GetType ()).Length > 1) {
-			Destroy (gameObject);
+			DestroyImmediate (gameObject);
 		}
 	}
 
@@ -33,7 +33,7 @@ public class ResetManager : MonoBehaviour {
 
 	void DeleteAllExceptPlayer(){
 		foreach (GameObject o in SceneManager.GetActiveScene().GetRootGameObjects()) {
-			if (o.GetComponent<Player> () == null && o.GetComponent<ResetManager>() == null) {
+			if (!o.CompareTag("Player") && !o.CompareTag(Props.PersistTag)) {
 				Destroy (o);
 			}
 		}

@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class ResetStation : MonoBehaviour {
 	// Use this for initialization
+	public static List<Vector3> ResetStationPositions = new List<Vector3>();
 
 	void Awake () {
 		DontDestroyOnLoad (this);
-		if (FindObjectsOfType (GetType ()).Length > 1) {
+		if (ResetStationPositions.Contains (gameObject.transform.position)) {
 			DestroyImmediate (gameObject);
+		} else {
+			ResetStationPositions.Add (gameObject.transform.position);
 		}
 	}
 
@@ -23,7 +26,6 @@ public class ResetStation : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject.CompareTag ("Player")) {
-			Debug.Log ("is triggered");
 			other.gameObject.GetComponent<ResetManager> ().ResetScene ();
 		}
 	}

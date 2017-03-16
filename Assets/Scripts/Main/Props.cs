@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Props {
+public static class Props {
 	public static string GroupTag = "Group";
 	public static string ObjectTag = "Object";
 	public static string ResetTag = "ResetManager";
+	public static string PersistTag = "Persist";
 }
