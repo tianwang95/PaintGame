@@ -39,6 +39,9 @@ public class CompoundMaterialComponent : MonoBehaviour {
 			rig.isKinematic = false;
 			rig.constraints = RigidbodyConstraints.None;
 			rig.SetDensity (mat.density);
+			if (rig.mass < 0.5f && rig.mass / mat.density < 1.0f) {
+				rig.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+			}
 		}
 		rig.drag = mat.drag;
 		rig.angularDrag = mat.angularDrag;

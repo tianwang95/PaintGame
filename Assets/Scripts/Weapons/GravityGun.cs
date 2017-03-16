@@ -8,6 +8,7 @@ public class GravityGun : MonoBehaviour, IWeapon {
 	public float grabStrength;
 	public float grabDistance;
 	public float holdDistance;
+	public float maxThrustVelocity = 100.0f;
 
 	private float forceTransitionPoint = 3.0f;
 	private float hookesConst;
@@ -15,8 +16,7 @@ public class GravityGun : MonoBehaviour, IWeapon {
 	private GameObject controlledObject;
 	private Vector3 controlPointLocal;
 	private bool prevUsingGravity = false;
-	private float prevDrag;
-	private float prevAngularDrag;
+	private float dampenDrag;
 
 	void Start () {
 		hookesConst = Mathf.Min (grabStrength / (forceTransitionPoint * forceTransitionPoint), grabStrength) / forceTransitionPoint;
@@ -31,7 +31,9 @@ public class GravityGun : MonoBehaviour, IWeapon {
 		if (controlledObject != null) {
 			ResetControlledObject ();
 			Rigidbody rig = controlledObject.GetComponent<Rigidbody> ();
-			rig.AddForce (Camera.main.transform.forward * thrust);
+			//max allowable thrust to contain velocity
+			float maxThrust = rig.mass * maxThrustVelocity / Time.fixedDeltaTime;
+			rig.AddForce (Camera.main.transform.forward * Mathf.Min(maxThrust, thrust));
 			controlledObject = null;
 		}
 	}
@@ -53,12 +55,15 @@ public class GravityGun : MonoBehaviour, IWeapon {
 				if (hitBody != null &&
 					hitBody.constraints == RigidbodyConstraints.None &&
 					hitObject.CompareTag(Props.GroupTag)) {
+					//Store prevs
 					prevUsingGravity = hitBody.useGravity;
-					prevDrag = hitBody.drag;
-					prevAngularDrag = hitBody.angularDrag;
+					//Change to not use gravity
 					hitBody.useGravity = false;
+					// Store object and associated tether point
 					controlledObject = hitObject;
 					controlPointLocal = hitObject.transform.InverseTransformPoint (hit.point);
+					// Compute drag to use during spring force
+					dampenDrag = 2.0f * Mathf.Sqrt (hitBody.mass * hookesConst);
 				}
 			}
 		}
@@ -74,24 +79,18 @@ public class GravityGun : MonoBehaviour, IWeapon {
 		float dist = path.magnitude;
 
 		Rigidbody rig = controlledObject.GetComponent<Rigidbody> ();
-		float forceMagnitude;
+		Vector3 force;
 		if (dist <= 3f) {
-			rig.drag = 3f;
-			rig.angularDrag = 3f;
-			forceMagnitude = dist * hookesConst;
+			force = dist * hookesConst * path.normalized - dampenDrag * rig.velocity;
 		} else {
-			rig.drag = prevDrag;
-			rig.angularDrag = prevAngularDrag;
-			forceMagnitude = Mathf.Min (grabStrength / (dist * dist), grabStrength);
+			force = Mathf.Min (grabStrength / (dist * dist), grabStrength) * path.normalized;
 		}
-		rig.AddForceAtPosition (path.normalized * forceMagnitude, controlPointWorld);
+		rig.AddForceAtPosition (force, controlPointWorld);
 	}
 
 	public void ResetControlledObject() {
 		Rigidbody rig = controlledObject.GetComponent<Rigidbody> ();
 		rig.useGravity = prevUsingGravity;
-		rig.drag = prevDrag;
-		rig.angularDrag = prevAngularDrag;
 	}
 
 	//get how many times this weapon can still be used
