@@ -17,6 +17,13 @@ public class Player : MonoBehaviour {
 	private GameObject currWeapon;
 	private int weaponIdx = 0;
 
+	void Awake() {
+//		DontDestroyOnLoad (gameObject);
+		if (FindObjectsOfType (GetType ()).Length > 1) {
+			DestroyImmediate (gameObject);
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
 		foreach (GameObject weapon in initWeapons) {
