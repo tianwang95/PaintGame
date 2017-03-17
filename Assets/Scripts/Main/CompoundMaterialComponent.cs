@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class CompoundMaterialComponent : MonoBehaviour {
 
 	public bool isFrozen = false;
@@ -9,6 +10,11 @@ public class CompoundMaterialComponent : MonoBehaviour {
 	public CompoundMaterial compoundMaterial;
 
 	public CompoundMaterial prevMaterial;
+
+	void OnEnable() {
+		ResetMaterial ();
+
+	}
 
 	void Start() {
 		if (compoundMaterial != null) {

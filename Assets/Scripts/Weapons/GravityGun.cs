@@ -16,6 +16,7 @@ public class GravityGun : MonoBehaviour, IWeapon {
 	private GameObject controlledObject;
 	private Vector3 controlPointLocal;
 	private bool prevUsingGravity = false;
+	private float prevAngularDrag = 0.05f;
 	private float dampenDrag;
 
 	void Start () {
@@ -57,6 +58,7 @@ public class GravityGun : MonoBehaviour, IWeapon {
 					hitObject.CompareTag(Props.GroupTag)) {
 					//Store prevs
 					prevUsingGravity = hitBody.useGravity;
+					prevAngularDrag = hitBody.angularDrag;
 					//Change to not use gravity
 					hitBody.useGravity = false;
 					// Store object and associated tether point
@@ -81,8 +83,10 @@ public class GravityGun : MonoBehaviour, IWeapon {
 		Rigidbody rig = controlledObject.GetComponent<Rigidbody> ();
 		Vector3 force;
 		if (dist <= 3f) {
+			rig.angularDrag = 1.0f;
 			force = dist * hookesConst * path.normalized - dampenDrag * rig.velocity;
 		} else {
+			rig.angularDrag = prevAngularDrag;
 			force = Mathf.Min (grabStrength / (dist * dist), grabStrength) * path.normalized;
 		}
 		rig.AddForceAtPosition (force, controlPointWorld);
@@ -91,6 +95,7 @@ public class GravityGun : MonoBehaviour, IWeapon {
 	public void ResetControlledObject() {
 		Rigidbody rig = controlledObject.GetComponent<Rigidbody> ();
 		rig.useGravity = prevUsingGravity;
+		rig.angularDrag = prevAngularDrag;
 	}
 
 	//get how many times this weapon can still be used
