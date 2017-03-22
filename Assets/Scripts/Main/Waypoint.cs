@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Waypoint : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
-		WaypointMovement move = other.attachedRigidbody.gameObject.GetComponent<WaypointMovement> ();
-		if (move != null) {
-			move.CollideWithWaypoint (gameObject);
+		if (other.attachedRigidbody != null) {
+			WaypointMovement move = other.attachedRigidbody.gameObject.GetComponent<WaypointMovement> ();
+			if (move != null) {
+				move.CollideWithWaypoint (gameObject);
+			}
 		}
 	}
 
