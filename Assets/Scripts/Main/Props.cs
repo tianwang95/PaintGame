@@ -7,4 +7,5 @@ public static class Props {
 	public static string ObjectTag = "Object";
 	public static string ResetTag = "ResetManager";
 	public static string PersistTag = "Persist";
+	public static string PlayerTag = "Player";
 }

@@ -39,6 +39,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private float m_NextStep;
         private bool m_Jumping;
         private AudioSource m_AudioSource;
+		private GameObject m_Platform;
 
         // Use this for initialization
         private void Start()
@@ -123,7 +124,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 m_MoveDir += Physics.gravity*m_GravityMultiplier*Time.fixedDeltaTime;
             }
+
             m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
+			if (m_Platform != null) {
+				Rigidbody platformRb = m_Platform.GetComponent<Rigidbody> ();
+				m_CharacterController.SimpleMove (platformRb.velocity);
+			}
 
             ProgressStepCycle(speed);
             UpdateCameraPosition(speed);
@@ -131,6 +137,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_MouseLook.UpdateCursorLock();
         }
 
+		public void SetPlatform(GameObject platform) {
+			m_Platform = platform;
+		}
 
         private void PlayJumpSound()
         {

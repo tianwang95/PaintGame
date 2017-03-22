@@ -7,8 +7,6 @@ public class Player : MonoBehaviour {
 	public GameObject[] initWeapons;
 
 	[SerializeField]
-	private List<GameObject> weapons = new List<GameObject>();
-	[SerializeField]
 	private float amountForward;
 	[SerializeField]
 	private float amountRight;
@@ -16,6 +14,7 @@ public class Player : MonoBehaviour {
 	private float amountLeft;
 	private GameObject currWeapon;
 	private int weaponIdx = 0;
+	private List<GameObject> weapons = new List<GameObject>();
 
 	void Awake() {
 //		DontDestroyOnLoad (gameObject);
