@@ -75,7 +75,7 @@ public class Player : MonoBehaviour {
 
 	void CycleWeapon(int index) {
 		if (weapons.Count > 0) {
-			weaponIdx = ((weaponIdx += index) % weapons.Count + weapons.Count) % weapons.Count;
+			weaponIdx = ((weaponIdx + index) % weapons.Count + weapons.Count) % weapons.Count;
 			GameObject nextWeapon = weapons [weaponIdx];
 			if (currWeapon != null) {
 				currWeapon.SetActive (false);

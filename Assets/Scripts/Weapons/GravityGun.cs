@@ -49,12 +49,13 @@ public class GravityGun : MonoBehaviour, IWeapon {
 			RaycastHit hit;
 			Physics.Raycast (ray, out hit);
 			//check distance to hit object
-			if ((hit.point - Camera.main.transform.position).magnitude < grabDistance) {
+			if (hit.rigidbody != null && (hit.point - Camera.main.transform.position).magnitude < grabDistance) {
+				Debug.Log (hit.transform.gameObject);
 				GameObject hitObject = hit.transform.gameObject;
 				Rigidbody hitBody = hitObject.GetComponent<Rigidbody> ();
 				//check that we can move this thing
 				if (hitBody != null &&
-					hitBody.constraints == RigidbodyConstraints.None &&
+					!hitBody.isKinematic &&
 					hitObject.CompareTag(Props.GroupTag)) {
 					//Store prevs
 					prevUsingGravity = hitBody.useGravity;

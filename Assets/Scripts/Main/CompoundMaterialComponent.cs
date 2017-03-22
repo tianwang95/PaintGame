@@ -42,10 +42,10 @@ public class CompoundMaterialComponent : MonoBehaviour {
 			rig.isKinematic = true;
 			rig.constraints = RigidbodyConstraints.FreezeAll;
 		} else {
-			rig.isKinematic = false;
-			rig.constraints = RigidbodyConstraints.None;
+//			rig.isKinematic = false;
+//			rig.constraints = RigidbodyConstraints.None;
 			rig.SetDensity (mat.density);
-			if (rig.mass < 0.5f && rig.mass / mat.density < 1.0f) {
+			if (rig.mass < 4.0f && rig.mass / mat.density < 1.0f) {
 				rig.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 			}
 		}

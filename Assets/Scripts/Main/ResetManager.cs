@@ -18,8 +18,6 @@ public class ResetManager : MonoBehaviour {
 			ResetScene ();
 		}
 		if (!hasResolvedMerge && SceneManager.sceneCount > 1 && SceneManager.GetSceneAt(1).isLoaded) {
-			Scene newScene = SceneManager.GetSceneAt (1);
-			Debug.Log (newScene.isLoaded);
 			SceneManager.MergeScenes (SceneManager.GetSceneAt(1), SceneManager.GetActiveScene());
 			hasResolvedMerge = true;
 		}

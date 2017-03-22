@@ -14,20 +14,20 @@ public class PickPaintTool : MonoBehaviour, IWeapon {
 
 	public void MainFire() {
 		GameObject objGroup = GetClicked ();
-		if (objGroup != null) {
-			paintMaterial = FindMaterial(objGroup);
-		}
-	}
-
-	public void SecondaryFire() {
-		GameObject objGroup = GetClicked ();
 		if (objGroup != null && paintMaterial != null) {
 			SetMaterial (objGroup, paintMaterial);
 		}
 	}
 
+	public void SecondaryFire() {
+		GameObject objGroup = GetClicked ();
+		if (objGroup != null) {
+			paintMaterial = FindMaterial(objGroup);
+			Debug.Log (paintMaterial);
+		}
+	}
+
 	CompoundMaterial FindMaterial(GameObject objGroup) {
-		Debug.Log (paintMaterial);
 		return objGroup.GetComponent<CompoundMaterialComponent> ().compoundMaterial;
 	}
 

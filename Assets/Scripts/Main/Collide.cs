@@ -47,10 +47,11 @@ public class Collide : MonoBehaviour {
 
 		material = FindMaterial(gameObject);
 
-		//Delete empty groups
-		if (gameObject.transform.childCount <= 0) {
-			Destroy (gameObject);
-		}
+//		//Delete empty groups
+//		if (gameObject.transform.childCount <= 0) {
+//			Destroy (gameObject);
+//		}
+		//Don't delete empty groups for sake of storing prevs
 
 		//Check all collisions for merge
 		foreach(Collision col in currentCollisions) {
@@ -95,7 +96,13 @@ public class Collide : MonoBehaviour {
 			//If either is frozen, then we will combine into the other automatically
 			Rigidbody selfRb = gameObject.GetComponent<Rigidbody>();
 			Rigidbody colRb = col.GetComponent<Rigidbody>();
-			if (selfRb.isKinematic ||
+			CompoundMaterialComponent selfComp = gameObject.GetComponent<CompoundMaterialComponent> ();
+			CompoundMaterialComponent colComp = col.GetComponent<CompoundMaterialComponent> ();
+			if (selfComp.isFrozen) {
+				Merge (col, gameObject);
+			} else if (colComp.isFrozen) {
+				Merge (gameObject, col);
+			} else if (selfRb.isKinematic ||
 				selfRb.constraints == RigidbodyConstraints.FreezeAll ||
 			    selfRb.constraints == RigidbodyConstraints.FreezePosition ||
 			    selfRb.constraints == RigidbodyConstraints.FreezeRotation) {
@@ -116,7 +123,11 @@ public class Collide : MonoBehaviour {
 	}
 
 	void Merge(GameObject currGroup, GameObject nextGroup) {
+		List<Transform> children = new List<Transform> ();
 		foreach (Transform child in currGroup.transform) {
+			children.Add (child);
+		}
+		foreach (Transform child in children) {
 			child.parent = nextGroup.transform;
 		}
 		//Set material again
