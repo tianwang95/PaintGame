@@ -29,6 +29,10 @@ public class ResetManager : MonoBehaviour {
 		hasResolvedMerge = false;
 	}
 
+	public void ResetAll() {
+		SceneManager.LoadScene (SceneManager.GetActiveScene ().name);
+	}
+
 	void DeleteAllExceptPlayer(){
 		foreach (GameObject o in SceneManager.GetActiveScene().GetRootGameObjects()) {
 			if (!o.CompareTag("Player") && !o.CompareTag(Props.PersistTag)) {
