@@ -5,9 +5,9 @@ using UnityEngine;
 public class Collide : MonoBehaviour {
 
 	private CompoundMaterial material;
-	private List <Collision> currentCollisions = new List<Collision> ();
-	private List <Collision> toMerge = new List<Collision> ();
-	private List <Collision> toRemove = new List<Collision> ();
+	private List <GameObject> currentCollisions = new List<GameObject> ();
+	private List <GameObject> toMerge = new List<GameObject> ();
+	private List <GameObject> toRemove = new List<GameObject> ();
 	private List <FixedJoint> jointsToDelete = new List<FixedJoint>();
 
 	// Use this for initialization
@@ -23,8 +23,6 @@ public class Collide : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-//		Vector3 vel = gameObject.GetComponent<Rigidbody> ().angularVelocity;
-//		gameObject.GetComponentInChildren<Renderer> ().material.color = new Vector4 (vel[0], vel[1], vel[2], 1.0f);
 		//reset color
 		foreach (FixedJoint joint in jointsToDelete) {
 			Destroy (joint);
@@ -32,33 +30,35 @@ public class Collide : MonoBehaviour {
 		jointsToDelete.Clear ();
 
 		if (toMerge.Count > 0) {
-			foreach (Collision col in toMerge) {
-				if (col.gameObject != null) {
-					MergeWithPhysics (col.gameObject);
+			foreach (GameObject col in toMerge) {
+				if (col != null) {
+					MergeWithPhysics (col);
 				}
 			}
 			toMerge.Clear ();
 		}
 
-		foreach (Collision col in toRemove) {
-			currentCollisions.Remove (col);
+		foreach (GameObject col in toRemove) {
+			currentCollisions.RemoveAll (x => x == col);
 		}
 		toRemove.Clear ();
 
 		material = FindMaterial(gameObject);
 
-//		//Delete empty groups
-//		if (gameObject.transform.childCount <= 0) {
+		//Delete empty groups
+		if (gameObject.transform.childCount <= 0) {
 //			Destroy (gameObject);
-//		}
-		//Don't delete empty groups for sake of storing prevs
+			gameObject.SetActive(false);
+		}
 
 		//Check all collisions for merge
-		foreach(Collision col in currentCollisions) {
-			if (col.transform.gameObject.CompareTag(Props.GroupTag)) {
+		foreach(GameObject col in currentCollisions) {
+			if (col.CompareTag(Props.GroupTag)) {
 				CheckMerge (col);
 			}
 		}
+
+
 	}
 
 	CompoundMaterial FindMaterial(GameObject objGroup) {
@@ -66,33 +66,32 @@ public class Collide : MonoBehaviour {
 	}
 
 	void OnCollisionEnter (Collision col) {
-		currentCollisions.Add (col);
+		currentCollisions.Add (col.gameObject);
 	}
 
 	void OnCollisionExit (Collision col) {
-		currentCollisions.Remove (col);
+		currentCollisions.RemoveAll (x => x == col.gameObject);
 	}
 
-	void CheckMerge (Collision collision) {
+	void CheckMerge (GameObject col) {
 		//Check that Collision object is Valid
-		if (collision.transform.childCount <= 0 ||
-			!collision.gameObject.CompareTag(Props.GroupTag)) {
+		if (col == null) {
+			return;
+		}
+		if (col.transform.childCount <= 0 ||
+			!col.CompareTag(Props.GroupTag)) {
 			return;
 		}
 
 		//Check that Collision object is not this / avoid duplicate collisions
-		if(gameObject == collision.gameObject ||
-			gameObject.GetInstanceID() < collision.gameObject.GetInstanceID()) {
+		if(gameObject == col ||
+			gameObject.GetInstanceID() < col.GetInstanceID()) {
 				return;
 			}
 
 		//Get Collision object color
-		CompoundMaterial colMaterial = FindMaterial(collision.gameObject);
-		if(material == colMaterial && collision.gameObject != null) {
-			GameObject col = collision.gameObject;
-			if (col == null) {
-				return;
-			}
+		CompoundMaterial colMaterial = FindMaterial(col);
+		if(material == colMaterial) {
 			//If either is frozen, then we will combine into the other automatically
 			Rigidbody selfRb = gameObject.GetComponent<Rigidbody>();
 			Rigidbody colRb = col.GetComponent<Rigidbody>();
@@ -114,10 +113,10 @@ public class Collide : MonoBehaviour {
 			    colRb.constraints == RigidbodyConstraints.FreezeRotation) {
 				Merge (gameObject, col);
 			} else {
-				MergeJoints (collision.gameObject);
-				toMerge.Add (collision);
+				MergeJoints (col);
+				toMerge.Add (col);
 			}
-			toRemove.Add (collision);
+			toRemove.Add (col);
 		}
 	
 	}
