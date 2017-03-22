@@ -9,16 +9,27 @@ public class CompoundMaterialComponent : MonoBehaviour {
 
 	public CompoundMaterial compoundMaterial;
 
-	public CompoundMaterial prevMaterial;
+	private CompoundMaterial originalMaterial;
+	private List<Transform> originalChildren = new List<Transform> ();
 
 	void OnEnable() {
 		ResetMaterial ();
-
 	}
 
 	void Start() {
 		if (compoundMaterial != null) {
+			originalMaterial = compoundMaterial;
 			SetMaterial (compoundMaterial);
+		}
+		foreach (Transform child in gameObject.transform) {
+			originalChildren.Add (child);
+		}
+	}
+
+	public void ResetToOriginal() {
+		SetMaterial (originalMaterial);
+		foreach (Transform child in originalChildren) {
+			child.parent = gameObject.transform;
 		}
 	}
 
@@ -27,7 +38,6 @@ public class CompoundMaterialComponent : MonoBehaviour {
 	}
 
 	public void SetMaterial(CompoundMaterial newMaterial) {
-		prevMaterial = compoundMaterial;
 		compoundMaterial = newMaterial;
 		ApplyMaterialProperties (newMaterial);
 	}

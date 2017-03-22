@@ -102,15 +102,11 @@ public class Collide : MonoBehaviour {
 			} else if (colComp.isFrozen) {
 				Merge (gameObject, col);
 			} else if (selfRb.isKinematic ||
-				selfRb.constraints == RigidbodyConstraints.FreezeAll ||
-			    selfRb.constraints == RigidbodyConstraints.FreezePosition ||
-			    selfRb.constraints == RigidbodyConstraints.FreezeRotation) {
+				selfRb.constraints != RigidbodyConstraints.None) {
 				//flip
 				Merge (col, gameObject);
 			} else if (colRb.isKinematic ||
-				colRb.constraints == RigidbodyConstraints.FreezeAll ||
-			    colRb.constraints == RigidbodyConstraints.FreezePosition ||
-			    colRb.constraints == RigidbodyConstraints.FreezeRotation) {
+				colRb.constraints != RigidbodyConstraints.None) {
 				Merge (gameObject, col);
 			} else {
 				MergeJoints (col);

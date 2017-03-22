@@ -107,7 +107,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_MoveDir.x = desiredMove.x*speed;
             m_MoveDir.z = desiredMove.z*speed;
 
-
             if (m_CharacterController.isGrounded)
             {
                 m_MoveDir.y = -m_StickToGroundForce;
@@ -126,8 +125,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
 
             m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
-			if (m_Platform != null) {
-				Rigidbody platformRb = m_Platform.GetComponent<Rigidbody> ();
+			if (hitInfo.collider.attachedRigidbody.gameObject.CompareTag ("Group")) {
+				Rigidbody platformRb = hitInfo.collider.attachedRigidbody.gameObject.GetComponent<Rigidbody> ();
 				m_CharacterController.SimpleMove (platformRb.velocity);
 			}
 
@@ -136,10 +135,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             m_MouseLook.UpdateCursorLock();
         }
-
-		public void SetPlatform(GameObject platform) {
-			m_Platform = platform;
-		}
 
         private void PlayJumpSound()
         {
@@ -239,11 +234,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             Rigidbody body = hit.collider.attachedRigidbody;
             //dont move the rigidbody if the character is on top of it
-            if (m_CollisionFlags == CollisionFlags.Below)
-            {
-                return;
-            }
-
+			if (m_CollisionFlags == CollisionFlags.Below) {
+				return;
+			}
             if (body == null || body.isKinematic)
             {
                 return;
