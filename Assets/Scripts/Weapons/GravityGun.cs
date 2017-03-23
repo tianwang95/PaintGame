@@ -9,6 +9,7 @@ public class GravityGun : MonoBehaviour, IWeapon {
 	public float grabDistance;
 	public float holdDistance;
 	public float maxThrustVelocity = 100.0f;
+	public AudioClip oscillatingSound;
 
 	private float forceTransitionPoint = 3.0f;
 	private float hookesConst;
@@ -19,7 +20,6 @@ public class GravityGun : MonoBehaviour, IWeapon {
 	private float prevAngularDrag = 0.05f;
 	private float dampenDrag;
 	private bool scaledUp = false;
-	private Coroutine oscillate;
 
 	void Start () {
 		hookesConst = Mathf.Min (grabStrength / (forceTransitionPoint * forceTransitionPoint), grabStrength) / forceTransitionPoint;
@@ -146,6 +146,15 @@ public class GravityGun : MonoBehaviour, IWeapon {
 	}
 
 	void StartOscillatingSound() {
+		AudioSource audio = gameObject.GetComponent<AudioSource> ();
+		audio.clip = oscillatingSound;
+		audio.Play ();
+	}
+
+	void StopOscillatingSound() {
+		AudioSource audio = gameObject.GetComponent<AudioSource> ();
+		audio.clip = oscillatingSound;
+		audio.Play ();
 	}
 
 	//get how many times this weapon can still be used
