@@ -56,7 +56,7 @@ public class GravityGun : MonoBehaviour, IWeapon {
 				//check that we can move this thing
 				if (hitBody != null &&
 					!hitBody.isKinematic &&
-					hitObject.CompareTag(Props.GroupTag)) {
+					hitObject.CompareTag(Props.Tags.Group)) {
 					//Store prevs
 					prevUsingGravity = hitBody.useGravity;
 					prevAngularDrag = hitBody.angularDrag;

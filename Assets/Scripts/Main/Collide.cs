@@ -16,7 +16,7 @@ public class Collide : MonoBehaviour {
 		material = FindMaterial(gameObject);
 
 		//Check that this is a Group Object
-		if (!gameObject.CompareTag (Props.GroupTag)) {
+		if (!gameObject.CompareTag (Props.Tags.Group)) {
 			Debug.LogError (name + " does not have a 'Group' tag, and therefore cannot be treated as a Group object");
 		}
 	}
@@ -53,7 +53,7 @@ public class Collide : MonoBehaviour {
 
 		//Check all collisions for merge
 		foreach(GameObject col in currentCollisions) {
-			if (col.CompareTag(Props.GroupTag)) {
+			if (col.CompareTag(Props.Tags.Group)) {
 				CheckMerge (col);
 			}
 		}
@@ -79,7 +79,7 @@ public class Collide : MonoBehaviour {
 			return;
 		}
 		if (col.transform.childCount <= 0 ||
-			!col.CompareTag(Props.GroupTag)) {
+			!col.CompareTag(Props.Tags.Group)) {
 			return;
 		}
 

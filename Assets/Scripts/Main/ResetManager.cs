@@ -35,7 +35,7 @@ public class ResetManager : MonoBehaviour {
 
 	void DeleteAllExceptPlayer(){
 		foreach (GameObject o in SceneManager.GetActiveScene().GetRootGameObjects()) {
-			if (!o.CompareTag("Player") && !o.CompareTag(Props.PersistTag)) {
+			if (!o.CompareTag("Player") && !o.CompareTag(Props.Tags.Persist)) {
 				Destroy (o);
 			}
 		}

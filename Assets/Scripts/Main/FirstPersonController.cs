@@ -39,7 +39,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private float m_NextStep;
         private bool m_Jumping;
         private AudioSource m_AudioSource;
-		private GameObject m_Platform;
 
         // Use this for initialization
         private void Start()
@@ -125,7 +124,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
 
             m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
-			if (hitInfo.collider.attachedRigidbody.gameObject.CompareTag ("Group")) {
+			if (hitInfo.collider != null  &&
+				hitInfo.collider.attachedRigidbody != null &&
+				hitInfo.collider.attachedRigidbody.gameObject.GetComponent<WaypointMovement>() != null) {
 				Rigidbody platformRb = hitInfo.collider.attachedRigidbody.gameObject.GetComponent<Rigidbody> ();
 				m_CharacterController.SimpleMove (platformRb.velocity);
 			}
@@ -241,7 +242,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 return;
             }
-            body.AddForceAtPosition(m_CharacterController.velocity*0.1f, hit.point, ForceMode.Impulse);
+            body.AddForceAtPosition(m_CharacterController.velocity*0.5f, hit.point, ForceMode.Impulse);
         }
     }
 }

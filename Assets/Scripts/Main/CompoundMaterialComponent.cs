@@ -43,7 +43,7 @@ public class CompoundMaterialComponent : MonoBehaviour {
 	}
 
 	private void ApplyMaterialProperties(CompoundMaterial mat) {
-		if (!gameObject.CompareTag (Props.GroupTag)) {
+		if (!gameObject.CompareTag (Props.Tags.Group)) {
 			Debug.LogError ("Cannot set material for something that is not a \"Group\"");
 		}
 
@@ -63,7 +63,7 @@ public class CompoundMaterialComponent : MonoBehaviour {
 		rig.angularDrag = mat.angularDrag;
 		rig.useGravity = mat.useGravity;
 		foreach(Transform child in gameObject.transform) { 
-			if (child.gameObject.CompareTag (Props.ObjectTag)) {
+			if (child.gameObject.CompareTag (Props.Tags.Object)) {
 				Collider coll = child.gameObject.GetComponent<Collider> ();
 				coll.material = mat.physicMaterial;
 				Renderer rend = child.gameObject.GetComponent<Renderer> ();

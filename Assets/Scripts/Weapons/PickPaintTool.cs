@@ -6,7 +6,15 @@ public class PickPaintTool : MonoBehaviour, IWeapon {
 
 	public CompoundMaterial paintMaterial;
 
+	private Renderer paintRend;
 	private int ammoCount = 1;
+	private Animator anim;
+
+	void Start() {
+		paintRend = gameObject.GetComponentsInChildren<Renderer> () [0];
+		anim = gameObject.GetComponent<Animator> ();
+
+	}
 
 	public string GetDisplayName() {
 		return "Paint Bucket";
@@ -17,14 +25,20 @@ public class PickPaintTool : MonoBehaviour, IWeapon {
 		if (objGroup != null && paintMaterial != null) {
 			SetMaterial (objGroup, paintMaterial);
 		}
+		Animator canvasAnim = GameObject.FindWithTag (Props.Tags.ReticleCanvas).GetComponent<Animator> ();
+		canvasAnim.SetTrigger (Props.CanvasTriggers.ContractReticle);
+		anim.SetTrigger (Props.PaintBucketTriggers.TiltDown);
 	}
 
 	public void SecondaryFire() {
 		GameObject objGroup = GetClicked ();
 		if (objGroup != null) {
 			paintMaterial = FindMaterial(objGroup);
-			Debug.Log (paintMaterial);
+			paintRend.material = paintMaterial.material;
 		}
+		Animator canvasAnim = GameObject.FindWithTag (Props.Tags.ReticleCanvas).GetComponent<Animator> ();
+		canvasAnim.SetTrigger (Props.CanvasTriggers.ExpandReticle);
+		anim.SetTrigger (Props.PaintBucketTriggers.TiltUp);
 	}
 
 	CompoundMaterial FindMaterial(GameObject objGroup) {
@@ -45,7 +59,7 @@ public class PickPaintTool : MonoBehaviour, IWeapon {
 			if (found == null) {
 				return found; 
 			}
-			if (found.CompareTag (Props.GroupTag)) {
+			if (found.CompareTag (Props.Tags.Group)) {
 				return found;
 			}
 			if (found.transform.parent == null) {
