@@ -26,4 +26,8 @@ public static class Props {
 		public static string FullBucket = "FullBucket";
 		public static string EmptyBucket = "EmptyBucket";
 	}
+
+	public static class WeaponPickupNames {
+		public static string WeaponHolder = "WeaponHolder";
+	}
 }

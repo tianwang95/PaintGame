@@ -53,7 +53,7 @@ public class Player : MonoBehaviour {
 		}
 	}
 
-	void PickUpWeapon(GameObject weapon) {
+	public void PickUpWeapon(GameObject weapon) {
 		if (weapon.GetComponent<IWeapon> () == null) {
 			Debug.LogError ("Tried to pick up GameObject without IWeapon as a weapon");
 			return;

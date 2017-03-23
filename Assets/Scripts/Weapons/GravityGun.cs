@@ -18,6 +18,8 @@ public class GravityGun : MonoBehaviour, IWeapon {
 	private bool prevUsingGravity = false;
 	private float prevAngularDrag = 0.05f;
 	private float dampenDrag;
+	private bool scaledUp = false;
+	private Coroutine oscillate;
 
 	void Start () {
 		hookesConst = Mathf.Min (grabStrength / (forceTransitionPoint * forceTransitionPoint), grabStrength) / forceTransitionPoint;
@@ -47,16 +49,19 @@ public class GravityGun : MonoBehaviour, IWeapon {
 		} else {
 			Ray ray = new Ray (Camera.main.transform.position, Camera.main.transform.forward);
 			RaycastHit hit;
-			Physics.Raycast (ray, out hit);
+			Physics.Raycast (ray, out hit, grabDistance);
 			//check distance to hit object
-			if (hit.rigidbody != null && (hit.point - Camera.main.transform.position).magnitude < grabDistance) {
+			if (hit.rigidbody != null) {
 				Debug.Log (hit.transform.gameObject);
 				GameObject hitObject = hit.transform.gameObject;
 				Rigidbody hitBody = hitObject.GetComponent<Rigidbody> ();
+				//Enlarge
+
+
 				//check that we can move this thing
 				if (hitBody != null &&
-					!hitBody.isKinematic &&
-					hitObject.CompareTag(Props.Tags.Group)) {
+				    !hitBody.isKinematic &&
+				    hitObject.CompareTag (Props.Tags.Group)) {
 					//Store prevs
 					prevUsingGravity = hitBody.useGravity;
 					prevAngularDrag = hitBody.angularDrag;
@@ -67,13 +72,22 @@ public class GravityGun : MonoBehaviour, IWeapon {
 					controlPointLocal = hitObject.transform.InverseTransformPoint (hit.point);
 					// Compute drag to use during spring force
 					dampenDrag = 2.0f * Mathf.Sqrt (hitBody.mass * hookesConst);
+					//Animate
+					ScaleUp();
+
+				} else {
+					Punch ();
 				}
+			} else {
+				Punch ();
+				
 			}
 		}
 	}
 
 	void FixedUpdate () {
 		if (controlledObject == null) {
+			ScaleDown ();
 			return;
 		}
 		Vector3 holdPoint = Camera.main.transform.position + Camera.main.transform.forward.normalized * holdDistance;
@@ -97,6 +111,41 @@ public class GravityGun : MonoBehaviour, IWeapon {
 		Rigidbody rig = controlledObject.GetComponent<Rigidbody> ();
 		rig.useGravity = prevUsingGravity;
 		rig.angularDrag = prevAngularDrag;
+	}
+
+	void ScaleUp() {
+		if (!scaledUp) { 
+			GameObject gunMesh = gameObject.transform.GetChild (0).gameObject;
+			iTween.ScaleTo (gunMesh, iTween.Hash (
+				"scale", gunMesh.transform.localScale * 1.2f,
+				"time", 0.1f,
+				"easetype", iTween.EaseType.easeInCubic
+			));
+			scaledUp = true;
+		}
+	}
+
+	void ScaleDown() {
+		if (scaledUp) {
+			GameObject gunMesh = gameObject.transform.GetChild (0).gameObject;
+			iTween.ScaleTo (gunMesh, iTween.Hash (
+				"scale", gunMesh.transform.localScale / 1.2f,
+				"time", 0.1f,
+				"easetype", iTween.EaseType.easeInCubic
+			));
+			scaledUp = false;
+		}
+	}
+
+	void Punch() {
+		GameObject gunMesh = gameObject.transform.GetChild (0).gameObject;
+		iTween.PunchScale (gunMesh, iTween.Hash (
+			"amount", new Vector3(0.12f, 0.12f, 0.12f),
+			"time", 0.2f
+		));
+	}
+
+	void StartOscillatingSound() {
 	}
 
 	//get how many times this weapon can still be used
