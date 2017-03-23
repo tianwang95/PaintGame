@@ -6,14 +6,19 @@ public class PickPaintTool : MonoBehaviour, IWeapon {
 
 	public CompoundMaterial paintMaterial;
 
+	private GameObject fullBucket;
+	private GameObject emptyBucket;
+
 	private Renderer paintRend;
 	private int ammoCount = 1;
 	private Animator anim;
 
 	void Start() {
-		paintRend = gameObject.GetComponentsInChildren<Renderer> () [0];
+		fullBucket = transform.FindChild (Props.PaintBucketNames.FullBucket).gameObject;
+		emptyBucket = transform.FindChild (Props.PaintBucketNames.EmptyBucket).gameObject;
+		paintRend = fullBucket.GetComponent<Renderer> ();
 		anim = gameObject.GetComponent<Animator> ();
-
+		SwitchToEmpty ();
 	}
 
 	public string GetDisplayName() {
@@ -24,6 +29,8 @@ public class PickPaintTool : MonoBehaviour, IWeapon {
 		GameObject objGroup = GetClicked ();
 		if (objGroup != null && paintMaterial != null) {
 			SetMaterial (objGroup, paintMaterial);
+			paintMaterial = null;
+			SwitchToEmpty ();
 		}
 		Animator canvasAnim = GameObject.FindWithTag (Props.Tags.ReticleCanvas).GetComponent<Animator> ();
 		canvasAnim.SetTrigger (Props.CanvasTriggers.ContractReticle);
@@ -33,6 +40,7 @@ public class PickPaintTool : MonoBehaviour, IWeapon {
 	public void SecondaryFire() {
 		GameObject objGroup = GetClicked ();
 		if (objGroup != null) {
+			SwitchToFull ();
 			paintMaterial = FindMaterial(objGroup);
 			paintRend.material = paintMaterial.material;
 		}
@@ -84,5 +92,15 @@ public class PickPaintTool : MonoBehaviour, IWeapon {
 
 	public GameObject CreateGameObject() {
 		return gameObject;
+	}
+
+	void SwitchToEmpty() {
+		fullBucket.SetActive (false);
+		emptyBucket.SetActive (true);
+	}
+
+	void SwitchToFull() {
+		fullBucket.SetActive (true);
+		emptyBucket.SetActive (false);
 	}
 }

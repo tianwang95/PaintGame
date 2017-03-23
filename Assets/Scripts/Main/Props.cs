@@ -21,4 +21,9 @@ public static class Props {
 		public static string TiltUp = "TiltUpTrigger";
 		public static string TiltDown = "TiltDownTrigger";
 	}
+
+	public static class PaintBucketNames {
+		public static string FullBucket = "FullBucket";
+		public static string EmptyBucket = "EmptyBucket";
+	}
 }
